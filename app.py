@@ -8,22 +8,15 @@ client = requests.session()
 crawler = nysc.Crawler(config.nysc['username'], config.nysc['password'], client)
 crawler.login()
 
-def in_string(needle, haystack):
-    if needle in haystack:
-        return True
-    
-    return False
-
-def is_correct_class(soup, config):
+def is_correct_class(soup, config, class_type):
     parsed_time = soup.select('.cell-head .big')[0].text
     split_parsed_time = parsed_time.split(' - ')
     start_time = split_parsed_time[0]
     parsed_class_name = soup.select('.cell-md-left .bigger')[0].text
-    if in_string(config.class_info['class_time'], start_time) and in_string(config.class_info['class_name'], parsed_class_name):
+    if config.get_class_time_by_string(class_type) in start_time and config.get_class_name_by_string(class_type) in parsed_class_name:
         return True
     
     return False
-
 
 def todays_class(classes, current_date):
     for scheduled_class in classes:
@@ -35,6 +28,7 @@ def todays_class(classes, current_date):
 ### Check if we are within 12 hours of class
 current_date = datetime.today().strftime('%Y-%m-%d')
 
+already_signed_up = False
 if scheduler.already_signed_up(current_date, client):
     already_signed_up = True
 
@@ -52,7 +46,7 @@ if not already_signed_up and todays_class and hours_difference < 12:
     soup = BeautifulSoup(classes.content, 'html.parser')
 
     #Loop through the found classes, if the time and type is correct, mimic a link click!
-    if is_correct_class(soup, config):
+    if is_correct_class(soup, config, todays_class["type"]):
         reserve_button = soup.select('.reserve')
         #Click reserve button if it exists, otherwise post the status to database
         if reserve_button: 
@@ -68,7 +62,8 @@ if not already_signed_up and todays_class and hours_difference < 12:
             button_text = soup.select('.disabled')[0].text
             scheduler.post_signup_attempt(current_date, button_text, client)
             print("Class status is currently: " + button_text)
-        
+    else:
+        print("Wasn't able to determine if this is the correct class.")
 else: 
     print("No class scheduled for today or already signed up.")
     

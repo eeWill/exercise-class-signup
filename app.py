@@ -35,9 +35,11 @@ if scheduler.already_signed_up(current_date, client):
 classes = scheduler.get_scheduled_classes(client)
 todays_class = todays_class(classes, current_date)
 date_format = '%Y-%m-%d %I:%M %p'
-class_start_time = config.get_class_time_by_string(todays_class["type"])
-class_date_time = datetime.strptime(current_date + " " + class_start_time, date_format)
-hours_difference = epoch.hours_difference(datetime.today(), class_date_time)
+
+if todays_class is not False:
+    class_start_time = config.get_class_time_by_string(todays_class["type"])
+    class_date_time = datetime.strptime(current_date + " " + class_start_time, date_format)
+    hours_difference = epoch.hours_difference(datetime.today(), class_date_time)
 
 #If there is a class scheduled, and we're within 12 hours of it
 if not already_signed_up and todays_class and hours_difference < 12:
@@ -51,12 +53,8 @@ if not already_signed_up and todays_class and hours_difference < 12:
         #Click reserve button if it exists, otherwise post the status to database
         if reserve_button: 
             reserve_href = soup.select('.reserve')[0]['href']
-            if config.nysc.production is True:
-                signup = client.get('https://www.newyorksportsclubs.com' + reserve_href)
-                status_text = "Signed Up"
-            else:
-                status_text = "Development: Signed Up"
-
+            signup = client.get('https://www.newyorksportsclubs.com' + reserve_href)
+            status_text = "Signed Up"
             scheduler.post_signup_attempt(current_date, status_text, client)
         else:
             button_text = soup.select('.disabled')[0].text

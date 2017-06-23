@@ -15,7 +15,7 @@ def post_signup_attempt(date, status, client):
 
 def already_signed_up(date, client):
     for signup in get_signups(client):
-        if signup["date"] == date and signup["status"] == "Signed up":
+        if signup["date"] == date and signup["status"] == "Signed Up":
             return True
     
     return False

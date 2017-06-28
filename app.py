@@ -41,8 +41,8 @@ if todays_class is not False:
     class_date_time = datetime.strptime(current_date + " " + class_start_time, date_format)
     hours_difference = epoch.hours_difference(datetime.today(), class_date_time)
 
-#If there is a class scheduled, and we're within 12 hours of it
-if not already_signed_up and todays_class and hours_difference < 12:
+#If there is a class scheduled, and we're within 11.75 hours of it
+if not already_signed_up and todays_class and hours_difference < 11.75:
     classFilterUrl = crawler.classFilterUrl(todays_class["type"])
     classes = client.get(classFilterUrl)
     soup = BeautifulSoup(classes.content, 'html.parser')

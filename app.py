@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 client = requests.session()
 crawler = nysc.Crawler(config.nysc['username'], config.nysc['password'], client)
-crawler.login()
+crawler.login() 
 
 def is_correct_class(soup, config, class_type):
     parsed_time = soup.select('.cell-head .big')[0].text
@@ -54,6 +54,8 @@ if not already_signed_up and todays_class and hours_difference < 11.75:
         if reserve_button: 
             reserve_href = soup.select('.reserve')[0]['href']
             signup = client.get('https://www.newyorksportsclubs.com' + reserve_href)
+            # Check if signed up, then run the below code, if still not signed up, print/enter that in the database
+            # h1.confirmation-header check for "You have a spot"
             status_text = "Signed Up"
             scheduler.post_signup_attempt(current_date, status_text, client)
         else:

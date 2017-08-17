@@ -1,7 +1,6 @@
 import requests
 from datetime import datetime, timedelta
 from nysc import nysc, config, scheduler
-from epoch import epoch
 from bs4 import BeautifulSoup
 
 client = requests.session()
@@ -46,12 +45,11 @@ if not already_signed_up and todays_class and hours_difference < 11.75:
     classFilterUrl = crawler.classFilterUrl(todays_class["type"])
     classes = client.get(classFilterUrl)
     soup = BeautifulSoup(classes.content, 'html.parser')
-
     #Loop through the found classes, if the time and type is correct, mimic a link click!
     if is_correct_class(soup, config, todays_class["type"]):
         reserve_button = soup.select('.reserve')
         #Click reserve button if it exists, otherwise post the status to database
-        if reserve_button: 
+        if reserve_button:  
             reserve_href = soup.select('.reserve')[0]['href']
             signup = client.get('https://www.newyorksportsclubs.com' + reserve_href)
             # Check if signed up, then run the below code, if still not signed up, print/enter that in the database

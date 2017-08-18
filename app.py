@@ -2,43 +2,44 @@ import requests
 from datetime import datetime, timedelta
 from nysc import nysc, config, scheduler
 from bs4 import BeautifulSoup
+from nysc.SportsClubPage import SportsClubPage
+from nysc.ClassDateTime import ClassDateTime
 
 client = requests.session()
 crawler = nysc.Crawler(config.nysc['username'], config.nysc['password'], client)
 crawler.login() 
 
-def is_correct_class(soup, config, class_type):
-    parsed_time = soup.select('.cell-head .big')[0].text
-    split_parsed_time = parsed_time.split(' - ')
-    start_time = split_parsed_time[0]
-    parsed_class_name = soup.select('.cell-md-left .bigger')[0].text
-    if config.get_class_time_by_string(class_type) in start_time and config.get_class_name_by_string(class_type) in parsed_class_name:
-        return True
-    
-    return False
 
-def todays_class(classes, current_date):
-    for scheduled_class in classes:
-        if scheduled_class["date"] == current_date:
-            return scheduled_class
-    
-    return False
 
-### Check if we are within 12 hours of class
+current_date_time = datetime.now()
+selector = ".toggle-%d-%d" % (current_date_time.month, current_date_time.day)
 current_date = datetime.today().strftime('%Y-%m-%d')
 
-already_signed_up = False
-if scheduler.already_signed_up(current_date, client):
-    already_signed_up = True
+todays_requested_class = scheduler.todays_class(client)
+already_signed_up = scheduler.already_signed_up(current_date, client)
 
-classes = scheduler.get_scheduled_classes(client)
-todays_class = todays_class(classes, current_date)
+requested_class_time = config.get_class_time_by_string(todays_requested_class["type"])
+requested_class_name = config.get_class_name_by_string(todays_requested_class["type"])
+
 date_format = '%Y-%m-%d %I:%M %p'
+class_date_time = datetime.strptime(current_date + " " + requested_class_time, date_format)
+date_time = ClassDateTime(current_date_time, class_date_time)
 
-if todays_class is not False:
-    class_start_time = config.get_class_time_by_string(todays_class["type"])
-    class_date_time = datetime.strptime(current_date + " " + class_start_time, date_format)
-    hours_difference = epoch.hours_difference(datetime.today(), class_date_time)
+if not already_signed_up and scheduler.class_is_scheduled(client) and date_time.within_twelve_hours():
+    classFilterUrl = crawler.classFilterUrl(todays_requested_class["type"])
+    result = client.get(classFilterUrl)
+    page = SportsClubPage(result.content, selector)
+
+    class_markup = page.get_correct_class_markup(requested_class_name, requested_class_time)
+    reserve_url = page.extract_reserve_url(class_markup)
+    print(class_markup.text)
+    print(reserve_url)
+
+# Goal is to remove as many levels of the nesting below as possible.
+# More classes and methods may be useful
+# Tests and methods for no upcoming classes
+
+"""
 
 #If there is a class scheduled, and we're within 11.75 hours of it
 if not already_signed_up and todays_class and hours_difference < 11.75:
@@ -64,4 +65,4 @@ if not already_signed_up and todays_class and hours_difference < 11.75:
         print("Wasn't able to determine if this is the correct class.")
 else: 
     print("No class scheduled for today or already signed up.")
-    
+    """

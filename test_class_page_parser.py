@@ -17,6 +17,11 @@ class TestSportsClubPage(unittest.TestCase):
         self.parser = SportsClubPage(file.read(), ".toggle-8-16")
         file.close()
 
+    def setUpWithClassListJustPilates(self):
+        file = open("test_data/class_list_pilates.html", 'r')
+        self.parser = SportsClubPage(file.read(), ".toggle-8-17")
+        file.close()
+
     def test_parse_confirmation_page(self):
         self.setUpWithConfirmationPage()
         confirmation_markup = self.parser.parse_confirmation_message()
@@ -30,11 +35,6 @@ class TestSportsClubPage(unittest.TestCase):
         self.setUpWithClassList()
         length_of_markup_array = len(self.parser.parse_classes_table_markup())
         self.assertTrue(length_of_markup_array > 0)
-
-    def test_get_correct_class_markup_returns_string(self):
-        self.setUpWithClassList()
-        correct_class = self.parser.get_correct_class_markup("Cycling", "6:30 AM")
-        self.assertTrue(isinstance(correct_class, str))
 
     def test_extract_start_time_from_markup_returns_correct_time(self):
         self.setUpWithClassList()
@@ -53,16 +53,24 @@ class TestSportsClubPage(unittest.TestCase):
         class_time = "6:30 AM"
         class_name = "Cycling"
         class_markup = self.parser.get_correct_class_markup(class_name, class_time)
-        self.assertTrue(class_time in class_markup)
-        self.assertTrue(class_name in class_markup)
+        self.assertTrue(class_time in class_markup.text)
+        self.assertTrue(class_name in class_markup.text)
 
     def test_get_correct_class_by_config_conditioning_at_730(self):
         self.setUpWithClassList()
         class_time = "7:30 PM"
         class_name = "Total Body Conditioning"
         class_markup = self.parser.get_correct_class_markup(class_name, class_time)
-        self.assertTrue(class_time in class_markup)
-        self.assertTrue(class_name in class_markup)
+        self.assertTrue(class_time in class_markup.text)
+        self.assertTrue(class_name in class_markup.text)
+
+    def test_extract_reserve_url_from_button(self):
+        self.setUpWithClassListJustPilates()
+        class_time = "8:30 PM"
+        class_name = "Pilates Mat"
+        signup_url = "/classes/19637559/reserve"
+        class_markup = self.parser.get_correct_class_markup(class_name, class_time)
+        self.assertEqual(self.parser.extract_reserve_url(class_markup), signup_url)
 
 if __name__ == '__main__':
     unittest.main()

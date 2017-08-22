@@ -9,24 +9,16 @@ from nysc.Crawler import Crawler
 
 client = requests.session()
 crawler = Crawler(client)
-crawler.login(config.nysc['username'], config.nysc['password']) 
+crawler.login(config.nysc['username'], config.nysc['password'])
 
-current_date_time = datetime.now()
-selector = ".toggle-%d-%d" % (current_date_time.month, current_date_time.day)
-current_date = datetime.today().strftime('%Y-%m-%d')
+selector = ".toggle-%d-%d" % (datetime.now().month, datetime.now().day)
 
-todays_requested_class = scheduler.todays_class(client)
-already_signed_up = scheduler.already_signed_up(current_date, client)
+signup = SignupController()
+scheduled_class = signup.todays_class()
+date_time = ClassDateTime(scheduled_class["time"])
 
-requested_class_time = config.get_class_time_by_string(todays_requested_class["type"])
-requested_class_name = config.get_class_name_by_string(todays_requested_class["type"])
-
-date_format = '%Y-%m-%d %I:%M %p'
-class_date_time = datetime.strptime(current_date + " " + requested_class_time, date_format)
-date_time = ClassDateTime(current_date_time, class_date_time)
-
-if not already_signed_up and scheduler.class_is_scheduled(client) and date_time.within_twelve_hours():
-    classFilterUrl = crawler.classFilterUrl(requested_class_name)
+if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.within_twelve_hours():
+    classFilterUrl = crawler.classFilterUrl(scheduled_class["name"])
     result = client.get(classFilterUrl)
     page = SportsClubPage(result.content, selector)
 
@@ -36,10 +28,10 @@ if not already_signed_up and scheduler.class_is_scheduled(client) and date_time.
 
     try:
         crawler.attempt_signup_and_check_for_confirmation(reserve_link_href)
-        scheduler.post_signup_attempt(current_date, "Signed Up", client)
+        signup.post_successful_signup_attempt()
         print("Signed Up")
     except:
-        scheduler.post_signup_attempt(current_date, "Failed Attempt", client)
+        signup.post_failed_signup_attempt()
         print("Failed Attempt")
 
 

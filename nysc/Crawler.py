@@ -1,24 +1,23 @@
 from bs4 import BeautifulSoup
 from nysc import config
 from datetime import datetime
+from .exceptions.SignupFailed import SignupFailed
 
 class Crawler:
 
     base_url = 'https://www.newyorksportsclubs.com'
     
-    def __init__(self, username, password, client):
-        self.username = username
-        self.password = password
+    def __init__(self, client):
         self.client = client
 
-    def login(self):
+    def login(self, username, password):
         result = self.client.get(self.base_url + '/login')
         soup = BeautifulSoup(result.content, 'html.parser')
         csrf_token = soup.find('input', {'name': '_csrf_token'})['value']
 
         values = {
-          '_username': self.username,
-          '_password': self.password,
+          '_username': username,
+          '_password': password,
           '_csrf_token': csrf_token
         }
 
@@ -37,5 +36,22 @@ class Crawler:
         print(classFilterUrl)
         return classFilterUrl
 
-    def client(self):
-        return self.client
+    def attempt_signup_and_check_for_confirmation(self, reserve_link_href):
+        result = self.go_to_reserve_url(reserve_link_href)
+        try:
+            parse_confirmation_message(result.content)
+        except:
+            raise SignupFailed
+
+    def go_to_reserve_url(self, reserve_link_href):
+         return self.client.get(self.base_url + '/' + reserve_link_href)
+
+    def parse_confirmation_message(self, html):
+        soup = BeautifulSoup(html, 'html.parser')
+        confirmation_soup = soup.select_one('.confirmation-header')
+
+        if confirmation_soup is None:
+            raise SelectorNotFound()
+
+        return confirmation_soup.text
+

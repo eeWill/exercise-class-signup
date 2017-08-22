@@ -1,0 +1,2 @@
+class SignupFailed(BaseException):
+    pass

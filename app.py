@@ -4,12 +4,12 @@ from nysc import nysc, config, scheduler
 from bs4 import BeautifulSoup
 from nysc.SportsClubPage import SportsClubPage
 from nysc.ClassDateTime import ClassDateTime
+from nysc.ReserveButton import ReserveButton
+from nysc.Crawler import Crawler 
 
 client = requests.session()
-crawler = nysc.Crawler(config.nysc['username'], config.nysc['password'], client)
-crawler.login() 
-
-
+crawler = Crawler(client)
+crawler.login(config.nysc['username'], config.nysc['password']) 
 
 current_date_time = datetime.now()
 selector = ".toggle-%d-%d" % (current_date_time.month, current_date_time.day)
@@ -26,19 +26,30 @@ class_date_time = datetime.strptime(current_date + " " + requested_class_time, d
 date_time = ClassDateTime(current_date_time, class_date_time)
 
 if not already_signed_up and scheduler.class_is_scheduled(client) and date_time.within_twelve_hours():
-    classFilterUrl = crawler.classFilterUrl(todays_requested_class["type"])
+    classFilterUrl = crawler.classFilterUrl(requested_class_name)
     result = client.get(classFilterUrl)
     page = SportsClubPage(result.content, selector)
 
     class_markup = page.get_correct_class_markup(requested_class_name, requested_class_time)
-    reserve_url = page.extract_reserve_url(class_markup)
-    print(class_markup.text)
-    print(reserve_url)
+    reserve_button = ReserveButton(class_markup)
+    reserve_link_href = reserve_button.extract_reserve_url()
+
+    try:
+        crawler.attempt_signup_and_check_for_confirmation(reserve_link_href)
+        scheduler.post_signup_attempt(current_date, "Signed Up", client)
+        print("Signed Up")
+    except:
+        scheduler.post_signup_attempt(current_date, "Failed Attempt", client)
+        print("Failed Attempt")
+
+
 
 # Goal is to remove as many levels of the nesting below as possible.
 # More classes and methods may be useful
 # Tests and methods for no upcoming classes
-
+# Elses should be eliminated using try catch
+# extract_correct_class_if_exists()
+# extract_button_href_if_exists()
 """
 
 #If there is a class scheduled, and we're within 11.75 hours of it

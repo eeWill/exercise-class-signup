@@ -28,10 +28,3 @@ class SportsClubPage:
         reserve_button = class_markup.select_one(".reserve")
         return reserve_button.get('href')
 
-    def parse_confirmation_message(self):
-        confirmation_soup = self.soup.select_one('.confirmation-header')
-
-        if confirmation_soup is None:
-            raise SelectorNotFound()
-
-        return confirmation_soup.text

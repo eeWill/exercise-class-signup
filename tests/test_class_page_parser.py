@@ -22,15 +22,6 @@ class TestSportsClubPage(unittest.TestCase):
         self.parser = SportsClubPage(file.read(), ".toggle-8-17")
         file.close()
 
-    def test_parse_confirmation_page(self):
-        self.setUpWithConfirmationPage()
-        confirmation_markup = self.parser.parse_confirmation_message()
-        self.assertTrue("You have a spot" in confirmation_markup)
-
-    def test_parse_time_markup_with_non_confirmation_page(self):
-        self.setUpWithLittleMarkup()
-        self.assertRaises(SelectorNotFound, self.parser.parse_confirmation_message)
-
     def test_parse_table_markup_selection_returns_an_array(self):
         self.setUpWithClassList()
         length_of_markup_array = len(self.parser.parse_classes_table_markup())

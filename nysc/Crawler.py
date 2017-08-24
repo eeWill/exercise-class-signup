@@ -39,7 +39,7 @@ class Crawler:
     def attempt_signup_and_check_for_confirmation(self, reserve_link_href):
         result = self.go_to_reserve_url(reserve_link_href)
         try:
-            parse_confirmation_message(result.content)
+            self.parse_confirmation_message(result.content)
         except:
             raise SignupFailed
 
@@ -54,4 +54,3 @@ class Crawler:
             raise SelectorNotFound()
 
         return confirmation_soup.text
-

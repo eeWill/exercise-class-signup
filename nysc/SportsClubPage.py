@@ -10,9 +10,9 @@ class SportsClubPage:
     def parse_classes_table_markup(self):
         return self.soup.select(self.row_selector)
 
-    def get_correct_class_markup(self, config_class_name, config_class_time):
-        for class_markup in self.parse_classes_table_markup():  
-            if config_class_name == self.extract_class_name_from_markup(class_markup) and config_class_time == self.extract_start_time_from_markup(class_markup):
+    def get_correct_class_markup(self, scheduled_class):
+        for class_markup in self.parse_classes_table_markup():
+            if scheduled_class["type"] == self.extract_class_name_from_markup(class_markup) and scheduled_class["start_time"] == self.extract_start_time_from_markup(class_markup):
                 return class_markup
 
     def extract_start_time_from_markup(self, class_markup):

@@ -1,28 +1,29 @@
 import requests
 from datetime import datetime, timedelta
-from nysc import nysc, config, scheduler
+from nysc import config
 from bs4 import BeautifulSoup
 from nysc.SportsClubPage import SportsClubPage
 from nysc.ClassDateTime import ClassDateTime
 from nysc.ReserveButton import ReserveButton
+from nysc.SignupController import SignupController
 from nysc.Crawler import Crawler 
 
 client = requests.session()
 crawler = Crawler(client)
 crawler.login(config.nysc['username'], config.nysc['password'])
 
-selector = ".toggle-%d-%d" % (datetime.now().month, datetime.now().day)
-
 signup = SignupController()
 scheduled_class = signup.todays_class()
-date_time = ClassDateTime(scheduled_class["time"])
+date_time = ClassDateTime(scheduled_class["start_time"])
 
 if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.within_twelve_hours():
-    classFilterUrl = crawler.classFilterUrl(scheduled_class["name"])
+    classFilterUrl = crawler.classFilterUrl(scheduled_class["type"])
     result = client.get(classFilterUrl)
+
+    selector = ".toggle-%d-%d" % (datetime.now().month, datetime.now().day)
     page = SportsClubPage(result.content, selector)
 
-    class_markup = page.get_correct_class_markup(requested_class_name, requested_class_time)
+    class_markup = page.get_correct_class_markup(scheduled_class)
     reserve_button = ReserveButton(class_markup)
     reserve_link_href = reserve_button.extract_reserve_url()
 

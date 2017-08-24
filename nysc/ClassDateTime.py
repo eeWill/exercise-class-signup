@@ -6,7 +6,8 @@ class ClassDateTime:
         self.class_time = class_time
 
     def within_twelve_hours(self):
-        if self.hours_until_class() < 11.75:
+        almost_twelve_hours = 11.90
+        if self.hours_until_class() < almost_twelve_hours:
             return True
 
         return False
@@ -22,6 +23,6 @@ class ClassDateTime:
     def class_date_time(self):
         date_format = '%Y-%m-%d %I:%M %p'
         current_date = datetime.today().strftime('%Y-%m-%d')
-        class_date_time = datetime.strptime(current_date + " " + self.class_time, date_format)
+        return datetime.strptime(current_date + " " + self.class_time, date_format)
     
 

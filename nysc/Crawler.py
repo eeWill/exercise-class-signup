@@ -24,6 +24,7 @@ class Crawler:
         self.client.post(self.base_url + '/login_check', data=values)
 
     def classFilterUrl(self, class_type):
+        """
         today = datetime.today()
         day = str(today.strftime('%d'))
         month = str(today.strftime('%m'))
@@ -33,8 +34,10 @@ class Crawler:
         timeFilter = "&class_filter%5Btime_of_day%5D%5B%5D=evening"
         classFilter = "&class_filter%5Bcategory%5D%5B%5D=" + config.get_class_type_id_by_string(class_type)
         classFilterUrl = baseUrl + clubFilter + classFilter + dateFilter + timeFilter
-        print(classFilterUrl)
-        return classFilterUrl
+        """
+        class_filter_url = self.base_url + "/classes?club=astoria&category=cycling&time_of_day=evening"
+        print(class_filter_url)
+        return class_filter_url
 
     def attempt_signup_and_check_for_confirmation(self, reserve_link_href):
         result = self.go_to_reserve_url(reserve_link_href)

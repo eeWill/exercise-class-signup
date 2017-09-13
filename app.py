@@ -25,6 +25,7 @@ if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.
 
     class_markup = page.get_correct_class_markup(scheduled_class)
     reserve_button = ReserveButton(class_markup)
+    print(reserve_button.text())
     reserve_link_href = reserve_button.extract_reserve_url()
 
     try:

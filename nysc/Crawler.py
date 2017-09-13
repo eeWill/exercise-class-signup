@@ -35,7 +35,7 @@ class Crawler:
         classFilter = "&class_filter%5Bcategory%5D%5B%5D=" + config.get_class_type_id_by_string(class_type)
         classFilterUrl = baseUrl + clubFilter + classFilter + dateFilter + timeFilter
         """
-        class_filter_url = self.base_url + "/classes?club=astoria&category=cycling&time_of_day=evening"
+        class_filter_url = self.base_url + "/classes?club=astoria&category=strength-tone&time_of_day=evening"
         print(class_filter_url)
         return class_filter_url
 

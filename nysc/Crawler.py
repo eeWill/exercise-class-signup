@@ -23,21 +23,12 @@ class Crawler:
 
         self.client.post(self.base_url + '/login_check', data=values)
 
-    def classFilterUrl(self, class_type):
-        """
-        today = datetime.today()
-        day = str(today.strftime('%d'))
-        month = str(today.strftime('%m'))
-        baseUrl = self.base_url + "/classes?"
-        clubFilter = "class_filter%5Bclub%5D%5B%5D=" + config.class_info["club_id"]
-        dateFilter = "&class_filter%5Bday%5D=" + month + "%2F" + day
-        timeFilter = "&class_filter%5Btime_of_day%5D%5B%5D=evening"
-        classFilter = "&class_filter%5Bcategory%5D%5B%5D=" + config.get_class_type_id_by_string(class_type)
-        classFilterUrl = baseUrl + clubFilter + classFilter + dateFilter + timeFilter
-        """
-        class_filter_url = self.base_url + "/classes?club=astoria&category=strength-tone&time_of_day=evening"
-        print(class_filter_url)
-        return class_filter_url
+    def class_filter_url(self, class_type):
+        base_url = self.base_url + "/classes?"
+        club_filter = "club=" + config.nysc.club_name
+        time_of_day_filter = "&time_of_day=evening"
+        category_filter = "&category=" + config.get_category_url_filter(class_type)
+        return base_url + club_filter + time_of_day_filter + category_filter
 
     def attempt_signup_and_check_for_confirmation(self, reserve_link_href):
         result = self.go_to_reserve_url(reserve_link_href)

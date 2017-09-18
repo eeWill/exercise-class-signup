@@ -41,9 +41,13 @@ class TestSportsClubPage(unittest.TestCase):
 
     def test_get_correct_class_markup_by_config(self):
         self.setUpWithClassList()
-        class_time = "6:30 AM"
+        class_time= "6:30 AM"
         class_name = "Cycling"
-        class_markup = self.parser.get_correct_class_markup(class_name, class_time)
+        scheduled_class = {
+            "start_time": class_time,
+            "type": class_name
+        }
+        class_markup = self.parser.get_correct_class_markup(scheduled_class)
         self.assertTrue(class_time in class_markup.text)
         self.assertTrue(class_name in class_markup.text)
 
@@ -51,17 +55,14 @@ class TestSportsClubPage(unittest.TestCase):
         self.setUpWithClassList()
         class_time = "7:30 PM"
         class_name = "Total Body Conditioning"
-        class_markup = self.parser.get_correct_class_markup(class_name, class_time)
+        scheduled_class = {
+            "start_time": class_time,
+            "type": class_name
+        }
+        class_markup = self.parser.get_correct_class_markup(scheduled_class)
         self.assertTrue(class_time in class_markup.text)
         self.assertTrue(class_name in class_markup.text)
 
-    def test_extract_reserve_url_from_button(self):
-        self.setUpWithClassListJustPilates()
-        class_time = "8:30 PM"
-        class_name = "Pilates Mat"
-        signup_url = "/classes/19637559/reserve"
-        class_markup = self.parser.get_correct_class_markup(class_name, class_time)
-        self.assertEqual(self.parser.extract_reserve_url(class_markup), signup_url)
 
 if __name__ == '__main__':
     unittest.main()

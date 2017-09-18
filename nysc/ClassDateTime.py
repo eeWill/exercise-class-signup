@@ -16,13 +16,13 @@ class ClassDateTime:
         return datetime.today().strftime('%Y-%m-%d')
 
     def hours_until_class(self):
-        time_difference = abs(datetime.now() - self.class_date_time())
+        time_difference = datetime.now() - self.class_date_time()
         hours_difference = time_difference.total_seconds() / 3600.0
         return hours_difference
 
     def class_date_time(self):
         date_format = '%Y-%m-%d %I:%M %p'
-        current_date = datetime.today().strftime('%Y-%m-%d')
-        return datetime.strptime(current_date + " " + self.class_time, date_format)
+        print(self.todays_date_string() + " " + self.class_time)
+        return datetime.strptime(self.todays_date_string() + " " + self.class_time, date_format)
     
 

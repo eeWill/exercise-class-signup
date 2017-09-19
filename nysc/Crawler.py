@@ -25,7 +25,7 @@ class Crawler:
 
     def class_filter_url(self, class_type):
         base_url = self.base_url + "/classes?"
-        club_filter = "club=" + config.nysc.club_name
+        club_filter = "club=" + config.nysc["club_name"]
         time_of_day_filter = "&time_of_day=evening"
         category_filter = "&category=" + config.get_category_url_filter(class_type)
         return base_url + club_filter + time_of_day_filter + category_filter

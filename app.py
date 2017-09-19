@@ -17,8 +17,8 @@ scheduled_class = signup.todays_class()
 date_time = ClassDateTime(scheduled_class["start_time"])
 
 if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.within_twelve_hours():
-    class_filter_url = crawler.classFilterUrl(scheduled_class["type"])
-    result = client.get(classFilterUrl)
+    class_filter_url = crawler.class_filter_url(scheduled_class["type"])
+    result = client.get(class_filter_url)
 
     selector = ".toggle-%d-%d" % (datetime.now().month, datetime.now().day)
     page = SportsClubPage(result.content, selector)

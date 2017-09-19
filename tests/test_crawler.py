@@ -7,12 +7,12 @@ from nysc.exceptions.SignupFailed import SignupFailed
 class TestCrawler(unittest.TestCase):
 
     def setUpWithConfirmationPage(self):
-        file = open("test_data/successful_signup.html", 'r')
+        file = open("tests/fixtures/successful_signup.html", 'r')
         self.crawler = Crawler(file.read())
         file.close()
 
     def confirmation_html(self):
-        file = open("test_data/successful_signup.html", 'r') 
+        file = open("tests/fixtures/successful_signup.html", 'r') 
         html = file.read()
         file.close()
         return html

@@ -6,7 +6,7 @@ from nysc.SportsClubPage import SportsClubPage
 class TestReserveButton(unittest.TestCase):
 
     def setUpWithClassMarkup(self):
-        file = open("test_data/class_list_pilates.html", 'r')
+        file = open("tests/fixtures/class_list_pilates.html", 'r')
         self.parser = SportsClubPage(file.read(), ".toggle-8-17")
         file.close()
         scheduled_class = {
@@ -16,7 +16,7 @@ class TestReserveButton(unittest.TestCase):
         return self.parser.get_correct_class_markup(scheduled_class)
 
     def setUpWithAtCapacityClass(self):
-        file = open("test_data/class_list.html", 'r')
+        file = open("tests/fixtures/class_list.html", 'r')
         self.parser = SportsClubPage(file.read(), ".toggle-8-16")
         file.close()
         scheduled_class = {

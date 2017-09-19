@@ -5,7 +5,7 @@ from nysc.exceptions.SelectorNotFound import SelectorNotFound
 class TestSportsClubPage(unittest.TestCase):
 
     def setUpWithConfirmationPage(self):
-        file = open("test_data/successful_signup.html", 'r')
+        file = open("tests/fixtures/successful_signup.html", 'r')
         self.parser = SportsClubPage(file.read(), ".toggle-8-16")
         file.close()
 
@@ -13,12 +13,12 @@ class TestSportsClubPage(unittest.TestCase):
         self.parser = SportsClubPage("<div>This is just a little bit of markup</div>", ".toggle-8-16")
 
     def setUpWithClassList(self):
-        file = open("test_data/class_list.html", 'r')
+        file = open("tests/fixtures/class_list.html", 'r')
         self.parser = SportsClubPage(file.read(), ".toggle-8-16")
         file.close()
 
     def setUpWithClassListJustPilates(self):
-        file = open("test_data/class_list_pilates.html", 'r')
+        file = open("tests/fixtures/class_list_pilates.html", 'r')
         self.parser = SportsClubPage(file.read(), ".toggle-8-17")
         file.close()
 

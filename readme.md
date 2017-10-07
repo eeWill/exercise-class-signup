@@ -1,6 +1,6 @@
-# NYSC Signup
+# Exercise Class Signup
 
-Python web crawler that signs up for NYSC classes.
+Python web crawler that signs up for class if a spot opens up.
 
 ## Introduction
 This project is meant to run on a frequent cronjob. On each run an Amazon RDS database is queried to see if any classes are scheduled for today. 

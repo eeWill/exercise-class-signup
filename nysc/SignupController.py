@@ -1,4 +1,5 @@
 import requests
+from nysc import config
 from datetime import datetime
 
 class SignupController():
@@ -7,7 +8,7 @@ class SignupController():
         self.current_date = datetime.today().strftime('%Y-%m-%d')
 
     def get_scheduled_classes(self):
-        result = requests.get('https://forte.evwill.com/classes')
+        result = requests.get(config.urls['classes'])
         return result.json()["data"]
 
     def todays_class(self):
@@ -30,7 +31,7 @@ class SignupController():
         return False
 
     def get_signups(self):
-        result = requests.get('https://forte.evwill.com/signups')
+        result = requests.get(config.urls['signups'])
         return result.json()["data"]
 
     def post_successful_signup_attempt(self):
@@ -44,4 +45,4 @@ class SignupController():
             "date": self.current_date,
             "status": status
         }
-        result = requests.post('https://forte.evwill.com/signups', data=values)
+        result = requests.post(config.urls['signups'], data=values)

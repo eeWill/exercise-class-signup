@@ -5,13 +5,11 @@ from .exceptions.SignupFailed import SignupFailed
 
 class Crawler:
 
-    base_url = 'https://www.newyorksportsclubs.com'
-    
     def __init__(self, client):
         self.client = client
 
     def login(self, username, password):
-        result = self.client.get(self.base_url + '/login')
+        result = self.client.get(config.urls['base_url'] + '/login')
         soup = BeautifulSoup(result.content, 'html.parser')
         csrf_token = soup.find('input', {'name': '_csrf_token'})['value']
 
@@ -21,10 +19,10 @@ class Crawler:
           '_csrf_token': csrf_token
         }
 
-        self.client.post(self.base_url + '/login_check', data=values)
+        self.client.post(config.urls['base_url'] + '/login_check', data=values)
 
     def class_filter_url(self, class_type):
-        base_url = self.base_url + "/classes?"
+        base_url = config.urls['base_url'] + "/classes?"
         club_filter = "club=" + config.nysc["club_name"]
         time_of_day_filter = "&time_of_day=evening"
         category_filter = "&category=" + config.get_category_url_filter(class_type)

@@ -1,8 +1,15 @@
 # Exercise Class Signup
 
-Python web crawler that signs up for class if a spot opens up.
+Python web crawler that signs up for class if a spot opens up. It makes heavy use of the BeautifulSoup parsing library.
 
-## Introduction
-This project is meant to run on a frequent cronjob. On each run an Amazon RDS database is queried to see if any classes are scheduled for today. 
+## How it works
+1. Makes a call to an endpoint on an AWS server to determine if the user wants to signup for class today. It also checks if a signup has already occured today.
+1. If it is determined that a signup attempt should occur, the crawler logs in and accesses the class page on the gym website.
+1. It parses the page to find the class, and attempts to signup by navigating to the reservation url if it's found.
+1. Logs the attempt as a success or failure by making a POST to the AWS server.
 
-If the current time is within 12 hours, the user is not already signed up, and the class is not at capacity, the crawler goes to the reservation link which signs the user up for the class.
+Since classes are often full, this project runs on a frequent cronjob for the best chances of signing up.
+
+## Remote server
+- Laravel install running on an EC2 instance and a RDS MySQL database.
+- Some basic endpoints exist for logging attempts and getting the list of currently scheduled classes.

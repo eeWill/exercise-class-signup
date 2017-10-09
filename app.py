@@ -1,22 +1,22 @@
 import requests
 from datetime import datetime, timedelta
 from nysc import config
-from bs4 import BeautifulSoup
 from nysc.SportsClubPage import SportsClubPage
 from nysc.ClassDateTime import ClassDateTime
 from nysc.ReserveButton import ReserveButton
 from nysc.SignupController import SignupController
 from nysc.Crawler import Crawler 
 
-client = requests.session()
-crawler = Crawler(client)
-crawler.login(config.nysc['username'], config.nysc['password'])
-
 signup = SignupController()
 scheduled_class = signup.todays_class()
 date_time = ClassDateTime(scheduled_class["start_time"])
 
 if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.within_twelve_hours():
+
+    client = requests.session()
+    crawler = Crawler(client)
+    crawler.login(config.nysc['username'], config.nysc['password'])
+
     class_filter_url = crawler.class_filter_url(scheduled_class["type"])
     result = client.get(class_filter_url)
 

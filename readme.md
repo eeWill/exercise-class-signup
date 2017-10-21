@@ -10,6 +10,18 @@ Python web crawler that signs up for class if a spot opens up. It makes heavy us
 
 Since classes are often full, this project runs on a frequent cronjob for the best chances of signing up.
 
+## Installation
+
+ `git clone` or `git pull` this repository.
+ `virtualenv --python=/usr/bin/python3.4 .` Create a virtual environment in the repo directory.
+ `pip install -r requirements.txt`
+ Install the necessary dependencies using pip
+ `vim nysc/config.py`
+ Create a configuration file with database and gym site credentials
+`python3 app.py`
+ Test that the script runs, if successful, add a cronjob
+
 ## Remote server
 - Laravel install running on an EC2 instance and a RDS MySQL database.
 - Some basic endpoints exist for logging attempts and getting the list of currently scheduled classes.
+

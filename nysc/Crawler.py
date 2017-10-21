@@ -36,7 +36,7 @@ class Crawler:
             raise SignupFailed
 
     def go_to_reserve_url(self, reserve_link_href):
-         return self.client.get(self.base_url + '/' + reserve_link_href)
+        return self.client.get(config.urls['base_url'] + reserve_link_href)
 
     def parse_confirmation_message(self, html):
         soup = BeautifulSoup(html, 'html.parser')

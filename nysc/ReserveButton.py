@@ -15,4 +15,4 @@ class ReserveButton():
         return self.get_button().get("href")
 
     def get_button(self):
-        return self.class_markup.select_one('.cell-foot > a.button')
+        return self.class_markup.select_one('.button-wrapper > a.button')

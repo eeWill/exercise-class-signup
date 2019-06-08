@@ -17,7 +17,7 @@ if not signup.already_signed_up() and signup.class_is_scheduled() and date_time.
     crawler = Crawler(client)
     crawler.login(config.nysc['username'], config.nysc['password'])
 
-    class_filter_url = crawler.class_filter_url(scheduled_class["type"])
+    class_filter_url = crawler.class_filter_url(scheduled_class)
     result = client.get(class_filter_url)
 
     selector = ".toggle-%d-%d" % (datetime.now().month, datetime.now().day)

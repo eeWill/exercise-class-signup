@@ -21,11 +21,16 @@ class Crawler:
 
         self.client.post(config.urls['base_url'] + '/login_check', data=values)
 
-    def class_filter_url(self, class_type):
+    def class_filter_url(self, scheduled_class):
+        time_of_day = "evening"
+
+        if "AM" in scheduled_class["time"]:
+            time_of_day = "morning"
+
         base_url = config.urls['base_url'] + "/classes?"
         club_filter = "club=" + config.nysc["club_name"]
-        time_of_day_filter = "&time_of_day=evening"
-        category_filter = "&category=" + config.get_category_url_filter(class_type)
+        time_of_day_filter = "&time_of_day=" + time_of_day
+        category_filter = "&category=" + config.get_category_url_filter(scheduled_class["type"])
         return base_url + club_filter + time_of_day_filter + category_filter
 
     def attempt_signup_and_check_for_confirmation(self, reserve_link_href):
